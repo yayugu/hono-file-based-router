@@ -1,12 +1,12 @@
 import { poweredBy } from 'hono/powered-by'
 import { createApp } from '../src/server'
 
-describe('Basic', () => {
+describe('Basic', async () => {
   const ROUTES = import.meta.glob('../mocks/api/routes/**/[a-z[-][a-z[_-]*.ts', {
     eager: true,
   })
 
-  const app = createApp({
+  const app = await createApp({
     root: '../mocks/api/routes',
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ROUTES: ROUTES as any,

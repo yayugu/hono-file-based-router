@@ -18,7 +18,7 @@ const ERROR = import.meta.glob('./routes/**/_error.(ts|tsx)', {
   eager: true,
 })
 
-const app = createApp({
+const app = await createApp({
   // @ts-expect-error type is not specified
   ROUTES,
   // @ts-expect-error type is not specified
@@ -27,7 +27,7 @@ const app = createApp({
   NOT_FOUND,
   // @ts-expect-error type is not specified
   ERROR,
-  root: './routes',
+  root: `${__dirname}/routes`,
   init: (app) => {
     app.use(logger())
   },

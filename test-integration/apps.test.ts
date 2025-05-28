@@ -2,7 +2,7 @@
 import { poweredBy } from 'hono/powered-by'
 import { createApp } from '../src/server'
 
-describe('Basic', () => {
+describe('Basic', async () => {
   const ROUTES = import.meta.glob('../mocks/app/routes/**/[a-z[-][a-z[_-]*.(tsx|ts|mdx)', {
     eager: true,
   })
@@ -10,7 +10,7 @@ describe('Basic', () => {
     eager: true,
   })
 
-  const app = createApp({
+  const app = await createApp({
     root: '../mocks/app/routes',
     ROUTES: ROUTES as any,
     NOT_FOUND: NOT_FOUND as any,
@@ -177,7 +177,7 @@ describe('Basic', () => {
   })
 })
 
-describe('With preserved', () => {
+describe('With preserved', async () => {
   const ROUTES = import.meta.glob('../mocks/app/routes/**/[a-z[-][a-z-_[]*.(tsx|ts)', {
     eager: true,
   })
@@ -198,7 +198,7 @@ describe('With preserved', () => {
     eager: true,
   })
 
-  const app = createApp({
+  const app = await createApp({
     root: '../mocks/app/routes',
     ROUTES: ROUTES as any,
     RENDERER: RENDERER as any,
@@ -333,12 +333,12 @@ describe('With preserved', () => {
   })
 })
 
-describe('API', () => {
+describe('API', async () => {
   const ROUES = import.meta.glob('../mocks/app/routes/**/[a-z[-][a-z-_[]*.(tsx|ts)', {
     eager: true,
   })
 
-  const app = createApp({
+  const app = await createApp({
     root: '../mocks/app/routes',
     ROUTES: ROUES as any,
   })
@@ -362,7 +362,7 @@ describe('API', () => {
   })
 })
 
-describe('Nested Layouts', () => {
+describe('Nested Layouts', async () => {
   const ROUTES = import.meta.glob('../mocks/app-nested/routes/**/[a-z[-][a-z-_[]*.(tsx|ts)', {
     eager: true,
   })
@@ -371,7 +371,7 @@ describe('Nested Layouts', () => {
     eager: true,
   })
 
-  const app = createApp({
+  const app = await createApp({
     root: '../mocks/app-nested/routes',
     ROUTES: ROUTES as any,
     RENDERER: RENDERER as any,
@@ -402,7 +402,7 @@ describe('Nested Layouts', () => {
   })
 })
 
-describe('Nested Middleware', () => {
+describe('Nested Middleware', async () => {
   const ROUTES = import.meta.glob(
     '../mocks/app-nested-middleware/routes/**/[a-z[-][a-z-_[]*.(tsx|ts)',
     {
@@ -417,7 +417,7 @@ describe('Nested Middleware', () => {
     }
   )
 
-  const app = createApp({
+  const app = await createApp({
     root: '../mocks/app-nested-middleware/routes',
     ROUTES: ROUTES as any,
     MIDDLEWARE: MIDDLEWARE as any,
@@ -473,12 +473,12 @@ describe('<Script /> component', () => {
     eager: true,
   })
 
-  describe('default', () => {
+  describe('default', async () => {
     const RENDERER = import.meta.glob('../mocks/app-script/routes/**/_renderer.tsx', {
       eager: true,
     })
 
-    const app = createApp({
+    const app = await createApp({
       root: '../mocks/app-script/routes',
       ROUTES: ROUTES as any,
       RENDERER: RENDERER as any,
@@ -564,12 +564,12 @@ describe('<Script /> component', () => {
     })
   })
 
-  describe('With async', () => {
+  describe('With async', async () => {
     const RENDERER = import.meta.glob('../mocks/app-script/routes/**/_async_renderer.tsx', {
       eager: true,
     })
 
-    const app = createApp({
+    const app = await createApp({
       root: '../mocks/app-script/routes',
       ROUTES: ROUTES as any,
       RENDERER: RENDERER as any,
@@ -584,12 +584,12 @@ describe('<Script /> component', () => {
     })
   })
 
-  describe('With nonce', () => {
+  describe('With nonce', async () => {
     const RENDERER = import.meta.glob('../mocks/app-script/routes/**/_nonce_renderer.tsx', {
       eager: true,
     })
 
-    const app = createApp({
+    const app = await createApp({
       root: '../mocks/app-script/routes',
       ROUTES: ROUTES as any,
       RENDERER: RENDERER as any,
@@ -610,12 +610,12 @@ describe('<Link /> component', () => {
     eager: true,
   })
 
-  describe('default (rel=stylesheet, absolute path)', () => {
+  describe('default (rel=stylesheet, absolute path)', async () => {
     const RENDERER = import.meta.glob('../mocks/app-link/routes/**/_renderer.tsx', {
       eager: true,
     })
 
-    const app = createApp({
+    const app = await createApp({
       root: '../mocks/app-link/routes',
       ROUTES: ROUTES as any,
       RENDERER: RENDERER as any,
@@ -694,7 +694,7 @@ describe('<Link /> component', () => {
   })
 })
 
-describe('<HasIslands /> Component with path aliases', () => {
+describe('<HasIslands /> Component with path aliases', async () => {
   const ROUES = import.meta.glob('../mocks/app-alias/routes/**/[a-z[-][a-z-_[]*.(tsx|ts)', {
     eager: true,
   })
@@ -702,7 +702,7 @@ describe('<HasIslands /> Component with path aliases', () => {
     eager: true,
   })
 
-  const app = createApp({
+  const app = await createApp({
     root: '../mocks/app-alias/routes',
     ROUTES: ROUES as any,
     RENDERER: RENDERER as any,
@@ -723,7 +723,7 @@ describe('<HasIslands /> Component with path aliases', () => {
   })
 })
 
-describe('<HasIslands /> Component with path alias with vite-tsconfig-paths', () => {
+describe('<HasIslands /> Component with path alias with vite-tsconfig-paths', async () => {
   const ROUES = import.meta.glob(
     '../mocks/app-alias-tsconfig-paths/routes/**/[a-z[-][a-z-_[]*.(tsx|ts)',
     {
@@ -734,7 +734,7 @@ describe('<HasIslands /> Component with path alias with vite-tsconfig-paths', ()
     eager: true,
   })
 
-  const app = createApp({
+  const app = await createApp({
     root: '../mocks/app-alias-tsconfig-paths/routes',
     ROUTES: ROUES as any,
     RENDERER: RENDERER as any,
@@ -755,7 +755,7 @@ describe('<HasIslands /> Component with path alias with vite-tsconfig-paths', ()
   })
 })
 
-describe('Island Components with Preserved Files', () => {
+describe('Island Components with Preserved Files', async () => {
   const ROUTES = import.meta.glob(
     '../mocks/app-islands-in-preserved/routes/**/[a-z[-][a-z-_[]*.(tsx|ts|mdx)',
     {
@@ -772,7 +772,7 @@ describe('Island Components with Preserved Files', () => {
     eager: true,
   })
 
-  const app = createApp({
+  const app = await createApp({
     root: '../mocks/app-islands-in-preserved/routes',
     ROUTES: ROUTES as any,
     RENDERER: RENDERER as any,
@@ -805,12 +805,12 @@ describe('Island Components with Preserved Files', () => {
   })
 })
 
-describe('Trailing Slash', () => {
+describe('Trailing Slash', async () => {
   const ROUTES = import.meta.glob('../mocks/app-nested/routes/**/[a-z[-][a-z-_[]*.(tsx|ts)', {
     eager: true,
   })
 
-  const app = createApp({
+  const app = await createApp({
     root: '../mocks/app-nested/routes',
     ROUTES: ROUTES as any,
     trailingSlash: true,
@@ -838,7 +838,7 @@ describe('Trailing Slash', () => {
   })
 })
 
-describe('Nested Dynamic Routes', () => {
+describe('Nested Dynamic Routes', async () => {
   const ROUTES = import.meta.glob(
     '../mocks/app-nested-dynamic-routes/routes/**/[a-z[-][a-z-_[]*.(tsx|ts)',
     {
@@ -846,7 +846,7 @@ describe('Nested Dynamic Routes', () => {
     }
   )
 
-  const app = createApp({
+  const app = await createApp({
     root: '../mocks/app-nested-dynamic-routes/routes',
     ROUTES: ROUTES as any,
   })
@@ -888,12 +888,12 @@ describe('Nested Dynamic Routes', () => {
   })
 })
 
-describe('Function Component Response', () => {
+describe('Function Component Response', async () => {
   const ROUTES = import.meta.glob('../mocks/app-function/routes/**/[a-z[-][a-z[_-]*.(tsx|ts)', {
     eager: true,
   })
 
-  const app = createApp({
+  const app = await createApp({
     root: '../mocks/app-function/routes',
     ROUTES: ROUTES as any,
   })
@@ -924,7 +924,7 @@ describe('Function Component Response', () => {
   })
 })
 
-describe('Route Groups', () => {
+describe('Route Groups', async () => {
   const ROUTES = import.meta.glob(
     '../mocks/app-route-groups/routes/**/[a-z[-][a-z[_-]*.(tsx|ts|mdx)',
     {
@@ -941,7 +941,7 @@ describe('Route Groups', () => {
     eager: true,
   })
 
-  const app = createApp({
+  const app = await createApp({
     root: '../mocks/app-route-groups/routes',
     ROUTES: ROUTES as any,
     RENDERER: RENDERER as any,

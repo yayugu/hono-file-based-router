@@ -42,6 +42,7 @@ type BaseServerOptions<E extends Env = Env> = {
   ERROR: Record<string, ErrorFile>
   MIDDLEWARE: Record<string, MiddlewareFile>
   root: string
+  projectRoot: string
   app?: Hono<E>
   init?: InitFunction<E>
   /**
