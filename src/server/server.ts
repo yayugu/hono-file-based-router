@@ -234,6 +234,8 @@ export const createApp = <E extends Env>(options: BaseServerOptions<E>): Hono<E>
         rootPath = /\/$/.test(rootPath) ? rootPath : rootPath + '/'
       }
       app.route(rootPath, subApp)
+      // 独自変更: 末尾の `/` を許容する
+      app.route(rootPath + '/', subApp)
     }
   }
 
