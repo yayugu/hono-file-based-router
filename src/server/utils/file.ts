@@ -48,6 +48,12 @@ export const groupByDirectory = <T = unknown>(files: Record<string, T>) => {
       if (keyA[0] !== '[' && keyB[0] === '[') {
         return -1
       }
+      if (keyA[0] === ':' && keyB[0] !== ':') {
+        return 1
+      }
+      if (keyA[0] !== ':' && keyB[0] === ':') {
+        return -1
+      }
       return keyA.localeCompare(keyB)
     })
 
