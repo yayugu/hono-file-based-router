@@ -1,10 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Hono } from 'hono'
 import type { Env, ErrorHandler, MiddlewareHandler, NotFoundHandler } from 'hono'
-import { createMiddleware } from 'hono/factory'
 import type { H } from 'hono/types'
-import { IMPORTING_ISLANDS_ID } from '../constants.js'
-import { contextStorage } from './context-storage.js'
 import {
   filePathToPath,
   groupByDirectory,
@@ -16,21 +13,15 @@ const NOTFOUND_FILENAME = '_404.tsx'
 const ERROR_FILENAME = '_error.tsx'
 const METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'] as const
 
-type HasIslandFile = {
-  [key in typeof IMPORTING_ISLANDS_ID]?: boolean
-}
-
-type InnerMeta = {} & HasIslandFile
-
-type AppFile = { default: Hono } & InnerMeta
+type AppFile = { default: Hono }
 
 type RouteFile = {
   default?: Function
-} & { [M in (typeof METHODS)[number]]?: H[] } & InnerMeta
+} & { [M in (typeof METHODS)[number]]?: H[] }
 
-type RendererFile = { default: MiddlewareHandler } & InnerMeta
-type NotFoundFile = { default: NotFoundHandler } & InnerMeta
-type ErrorFile = { default: ErrorHandler } & InnerMeta
+type RendererFile = { default: MiddlewareHandler }
+type NotFoundFile = { default: NotFoundHandler }
+type ErrorFile = { default: ErrorHandler }
 type MiddlewareFile = { default: MiddlewareHandler[] }
 
 type InitFunction<E extends Env = Env> = (app: Hono<E>) => void
@@ -54,7 +45,7 @@ type BaseServerOptions<E extends Env = Env> = {
 
 export type ServerOptions<E extends Env = Env> = Partial<BaseServerOptions<E>>
 
-type Variables = {} & HasIslandFile
+type Variables = {}
 
 export const createApp = <E extends Env>(options: BaseServerOptions<E>): Hono<E> => {
   const root = options.root
@@ -63,11 +54,6 @@ export const createApp = <E extends Env>(options: BaseServerOptions<E>): Hono<E>
 
   const app = options.app ?? new Hono()
   const trailingSlash = options.trailingSlash ?? false
-
-  // Share context by AsyncLocalStorage
-  app.use(async function ShareContext(c, next) {
-    await contextStorage.run(c, () => next())
-  })
 
   if (options.init) {
     options.init(app)
@@ -119,8 +105,6 @@ export const createApp = <E extends Env>(options: BaseServerOptions<E>): Hono<E>
       const subApp = new Hono<{
         Variables: Variables
       }>()
-      let hasIslandComponent = false
-
       const notFoundHandler = getNotFoundHandler(dir, notFoundMap)
       if (notFoundHandler) {
         subApp.use(async (c, next) => {
@@ -140,10 +124,6 @@ export const createApp = <E extends Env>(options: BaseServerOptions<E>): Hono<E>
       const rendererPaths = getPaths(dir, rendererList)
       rendererPaths.map((path) => {
         const renderer = RENDERER_FILE[path]
-        const importingIslands = renderer[IMPORTING_ISLANDS_ID]
-        if (importingIslands) {
-          hasIslandComponent = true
-        }
         const rendererDefault = renderer.default
         if (rendererDefault) {
           subApp.all('*', rendererDefault)
@@ -168,20 +148,11 @@ export const createApp = <E extends Env>(options: BaseServerOptions<E>): Hono<E>
       }
 
       for (const [filename, route] of Object.entries(content)) {
-        const importingIslands = route[IMPORTING_ISLANDS_ID]
-        const setInnerMeta = createMiddleware<{
-          Variables: Variables
-        }>(async function innerMeta(c, next) {
-          c.set(IMPORTING_ISLANDS_ID, importingIslands ? true : hasIslandComponent)
-          await next()
-        })
-
         const routeDefault = route.default
         const path = filePathToPath(filename)
 
         // Instance of Hono
         if (routeDefault && 'fetch' in routeDefault) {
-          subApp.use(setInnerMeta)
           subApp.route(path, routeDefault)
         }
 
@@ -189,20 +160,17 @@ export const createApp = <E extends Env>(options: BaseServerOptions<E>): Hono<E>
         for (const m of METHODS) {
           const handlers = (route as Record<string, H[]>)[m]
           if (handlers) {
-            subApp.on(m, path, setInnerMeta)
             subApp.on(m, path, ...handlers)
           }
         }
 
         // export default factory.createHandlers(...)
         if (routeDefault && Array.isArray(routeDefault)) {
-          subApp.get(path, setInnerMeta)
           subApp.get(path, ...(routeDefault as H[]))
         }
 
         // export default function Helle() {}
         if (typeof routeDefault === 'function') {
-          subApp.get(path, setInnerMeta)
           subApp.get(path, async (c) => {
             const result = await routeDefault(c)
 
@@ -210,6 +178,7 @@ export const createApp = <E extends Env>(options: BaseServerOptions<E>): Hono<E>
               return result
             }
 
+            // @ts-expect-error ignore
             return c.render(result, route as any)
           })
         }
@@ -278,13 +247,6 @@ function applyNotFound(
       const notFound = content[NOTFOUND_FILENAME]
       if (notFound) {
         const notFoundHandler = notFound.default
-        const importingIslands = notFound[IMPORTING_ISLANDS_ID]
-        if (importingIslands) {
-          app.use('*', (c, next) => {
-            c.set(IMPORTING_ISLANDS_ID, true)
-            return next()
-          })
-        }
         app.get('*', (c) => {
           c.status(404)
           return notFoundHandler(c)
@@ -302,10 +264,6 @@ function getErrorHandler(dir: string, map: Record<string, Record<string, ErrorFi
         const matchedErrorHandler = errorFile.default
         if (matchedErrorHandler) {
           const errorHandler: ErrorHandler = async (error, c) => {
-            const importingIslands = errorFile[IMPORTING_ISLANDS_ID]
-            if (importingIslands) {
-              c.set(IMPORTING_ISLANDS_ID, importingIslands)
-            }
             c.status(500)
             return matchedErrorHandler(error, c)
           }

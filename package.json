@@ -5,19 +5,15 @@
   "type": "module",
   "scripts": {
     "prepare": "tsup",
-    "test": "bun typecheck && bun test:unit && bun test:integration && bun test:e2e",
+    "test": "bun typecheck && bun test:unit",
     "test:unit": "vitest --run ./src",
-    "test:integration": "bun test:integration:api && bun test:integration:apps",
-    "test:integration:api": "vitest --run ./test-integration/api.test.ts",
-    "test:integration:apps": "vitest --run -c ./test-integration/vitest.config.ts ./test-integration/apps.test.ts",
-    "test:e2e": "playwright test -c ./test-e2e/playwright.config.ts ./test-e2e/e2e.test.ts",
     "typecheck": "tsc --noEmit",
     "build": "tsup && publint",
     "watch": "tsup --watch",
-    "lint": "eslint src mocks test-integration test-e2e",
-    "lint:fix": "eslint src mocks test-integration test-e2e --fix",
-    "format": "prettier --check \"src/**/*.{js,ts}\" \"mocks/**/*.{js,ts}\" \"test-*/**/*.{js,ts}\"",
-    "format:fix": "prettier --write \"src/**/*.{js,ts}\" \"mocks/**/*.{js,ts}\" \"test-*/**/*.{js,ts}\"",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "format": "prettier --check \"src/**/*.{js,ts}\"",
+    "format:fix": "prettier --write \"src/**/*.{js,ts}\"",
     "prerelease": "bun run test && bun run build",
     "release": "np"
   },
@@ -44,26 +40,6 @@
     "./server/base": {
       "types": "./dist/server/base.d.ts",
       "import": "./dist/server/base.js"
-    },
-    "./client": {
-      "types": "./dist/client/index.d.ts",
-      "import": "./dist/client/index.js"
-    },
-    "./utils/*": {
-      "types": "./dist/utils/*.d.ts",
-      "import": "./dist/utils/*.js"
-    },
-    "./vite": {
-      "types": "./dist/vite/index.d.ts",
-      "import": "./dist/vite/index.js"
-    },
-    "./vite/client": {
-      "types": "./dist/vite/client.d.ts",
-      "import": "./dist/vite/client.js"
-    },
-    "./vite/components": {
-      "types": "./dist/vite/components/index.d.ts",
-      "import": "./dist/vite/components/index.js"
     }
   },
   "typesVersions": {
@@ -79,21 +55,6 @@
       ],
       "server/base": [
         "./dist/server/base"
-      ],
-      "client": [
-        "./dist/client"
-      ],
-      "utils/*": [
-        "./dist/utils/*"
-      ],
-      "vite": [
-        "./dist/vite"
-      ],
-      "vite/client": [
-        "./dist/vite/client"
-      ],
-      "vite/components": [
-        "./dist/vite/components"
       ]
     }
   },
