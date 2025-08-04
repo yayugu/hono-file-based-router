@@ -1,5 +1,5 @@
 {
-  "name": "honox",
+  "name": "hono-file-based-router",
   "version": "0.1.40",
   "main": "dist/index.js",
   "type": "module",
@@ -62,13 +62,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/honojs/honox.git"
+    "url": "https://github.com/yayugu/hono-file-based-router.git"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"
   },
-  "homepage": "https://hono.dev",
   "dependencies": {
     "jsonc-parser": "3.3.1",
     "precinct": "12.1.2",
